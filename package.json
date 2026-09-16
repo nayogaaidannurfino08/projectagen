@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview",
-    "postinstall": "esbuild --version || true"
+    "preview": "vite preview"
   },
   "dependencies": {
     "firebase": "^11.4.0",
