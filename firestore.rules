@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function getUserAgenId() {
+      return getUserData().agenId;
+    }
+
+    function getUserRole() {
+      return getUserData().role;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (getUserRole() == 'admin');
+    }
+
+    function isKasir() {
+      return isAuthenticated() && (getUserRole() == 'kasir');
+    }
+
+    function isSameAgen(agenId) {
+      return isAuthenticated() && (agenId == getUserAgenId());
+    }
+
+    // Koleksi users
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || (isAdmin() && isSameAgen(resource.data.agenId)));
+      allow create: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow update: if isAuthenticated() && (isAdmin() && isSameAgen(resource.data.agenId));
+      allow delete: if false; // Data user tidak dihapus fisik, hanya dinonaktifkan
+    }
+
+    // Koleksi produk
+    match /produk/{produkId} {
+      allow read: if isAuthenticated() && isSameAgen(resource.data.agenId);
+      allow create: if isAdmin() && isSameAgen(request.resource.data.agenId);
+      allow update: if isAuthenticated() && isSameAgen(resource.data.agenId) && 
+        (isAdmin() || (isKasir() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stok', 'updatedAt'])));
+      allow delete: if isAdmin() && isSameAgen(resource.data.agenId);
+    }
+
+    // Koleksi transaksi
+    match /transaksi/{transaksiId} {
+      allow read: if isAuthenticated() && isSameAgen(resource.data.agenId);
+      allow create: if isAuthenticated() && isSameAgen(request.resource.data.agenId);
+      allow update, delete: if isAdmin() && isSameAgen(resource.data.agenId);
+    }
+
+    // Koleksi stokLog
+    match /stokLog/{logId} {
+      allow read: if isAuthenticated() && isSameAgen(resource.data.agenId);
+      allow create: if isAuthenticated() && isSameAgen(request.resource.data.agenId);
+      allow update, delete: if isAdmin() && isSameAgen(resource.data.agenId);
+    }
+
+    // Koleksi pelanggan
+    match /pelanggan/{pelangganId} {
+      allow read: if isAuthenticated() && isSameAgen(resource.data.agenId);
+      allow create: if isAuthenticated() && isSameAgen(request.resource.data.agenId);
+      allow update: if isAuthenticated() && isSameAgen(resource.data.agenId) && (isAdmin() || isKasir());
+      allow delete: if isAdmin() && isSameAgen(resource.data.agenId);
+    }
+
+    // Koleksi hutang
+    match /hutang/{hutangId} {
+      allow read: if isAuthenticated() && isSameAgen(resource.data.agenId);
+      allow create: if isAuthenticated() && isSameAgen(request.resource.data.agenId);
+      allow update, delete: if isAdmin() && isSameAgen(resource.data.agenId);
+    }
+  }
+}
