@@ -7,12 +7,13 @@ import {
 } from "firebase/firestore";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyCss4pe9JSKiHi06NSLm-20vfgLoE2eL9g",
-  authDomain: "aps-mobile-agen.firebaseapp.com",
-  projectId: "aps-mobile-agen",
-  storageBucket: "aps-mobile-agen.firebasestorage.app",
-  messagingSenderId: "349786174588",
-  appId: "1:349786174588:web:8672bd4c99533a377785f9"
+  apiKey: "AIzaSyAeLBmDEff8X9_hF_pXTL0-kfeSuX6XD68",
+  authDomain: "aps-agen-kasir.firebaseapp.com",
+  projectId: "aps-agen-kasir",
+  storageBucket: "aps-agen-kasir.firebasestorage.app",
+  messagingSenderId: "440756010514",
+  appId: "1:440756010514:web:f87c35ee568e2ad4b1e2cb",
+  measurementId: "G-PHVY4J24N3"
 };
 
 export const DEFAULT_AGEN_ID = "agen_utama_01";
