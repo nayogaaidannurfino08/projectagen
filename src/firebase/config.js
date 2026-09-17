@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyAeLBmDEff8X9_hF_pXTL0-kfeSuX6XD68",
+  apiKey: "AIzaSyC1If37eHididIDFzs9UWujI8y4Hd8r_Ig",
   authDomain: "aps-agen-kasir.firebaseapp.com",
   projectId: "aps-agen-kasir",
   storageBucket: "aps-agen-kasir.firebasestorage.app",
